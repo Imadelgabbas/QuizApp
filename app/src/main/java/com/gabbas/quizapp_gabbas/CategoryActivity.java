@@ -56,6 +56,8 @@ public class CategoryActivity extends AppCompatActivity {
         MaterialCardView cardSport = findViewById(R.id.cardSport);
         MaterialCardView cardFilms = findViewById(R.id.cardFilms);
         MaterialCardView cardCulture = findViewById(R.id.cardCulture);
+        MaterialCardView cardChatbot = findViewById(R.id.cardChatbot);
+        MaterialCardView cardMaps = findViewById(R.id.cardMaps);
 
         View.OnClickListener categoryClickListener = new View.OnClickListener() {
             @Override
@@ -68,6 +70,15 @@ public class CategoryActivity extends AppCompatActivity {
                 else if (id == R.id.cardSport) category = "Sport";
                 else if (id == R.id.cardFilms) category = "Films";
                 else if (id == R.id.cardCulture) category = "Culture générale";
+                else if (id == R.id.cardChatbot) {
+                    Intent intent = new Intent(CategoryActivity.this, ChatbotActivity.class);
+                    startActivity(intent);
+                    return;
+                } else if (id == R.id.cardMaps) {
+                    Intent intent = new Intent(CategoryActivity.this, MapsActivity.class);
+                    startActivity(intent);
+                    return;
+                }
 
                 Intent intent = new Intent(CategoryActivity.this, QuizActivity.class);
                 intent.putExtra("category", category);
@@ -84,6 +95,8 @@ public class CategoryActivity extends AppCompatActivity {
         cardSport.setOnClickListener(categoryClickListener);
         cardFilms.setOnClickListener(categoryClickListener);
         cardCulture.setOnClickListener(categoryClickListener);
+        cardChatbot.setOnClickListener(categoryClickListener);
+        cardMaps.setOnClickListener(categoryClickListener);
     }
 
     private void checkLocationPermission() {

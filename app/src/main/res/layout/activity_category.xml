@@ -82,11 +82,6 @@
                         android:text="Géographie"
                         android:layout_marginTop="8dp"
                         android:textStyle="bold"/>
-                    <Button
-                        android:id="@+id/btnGeo"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:visibility="gone"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -117,11 +112,6 @@
                         android:text="Science"
                         android:layout_marginTop="8dp"
                         android:textStyle="bold"/>
-                    <Button
-                        android:id="@+id/btnScience"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:visibility="gone"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -152,11 +142,6 @@
                         android:text="Sport"
                         android:layout_marginTop="8dp"
                         android:textStyle="bold"/>
-                    <Button
-                        android:id="@+id/btnSport"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:visibility="gone"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -187,11 +172,6 @@
                         android:text="Films"
                         android:layout_marginTop="8dp"
                         android:textStyle="bold"/>
-                    <Button
-                        android:id="@+id/btnFilms"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:visibility="gone"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -222,11 +202,66 @@
                         android:text="Culture"
                         android:layout_marginTop="8dp"
                         android:textStyle="bold"/>
-                    <Button
-                        android:id="@+id/btnCulture"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:visibility="gone"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Chatbot Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardChatbot"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                style="@style/ModernCard"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@android:drawable/stat_notify_chat"
+                        app:tint="#607D8B"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chatbot"
+                        android:layout_marginTop="8dp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Maps Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardMaps"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                style="@style/ModernCard"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@android:drawable/ic_dialog_map"
+                        app:tint="#F44336"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Voir Carte"
+                        android:layout_marginTop="8dp"
+                        android:textStyle="bold"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
