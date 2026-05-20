@@ -13,3 +13,13 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# Firebase secrets
+firebase_key.json

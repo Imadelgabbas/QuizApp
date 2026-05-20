@@ -1,130 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/main_background"
-    android:gravity="center"
-    android:padding="24dp">
-
-    <ImageView
-        android:id="@+id/ivTrophy"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:src="@android:drawable/btn_star_big_on"
-        app:tint="@color/primaryColor"
-        android:layout_marginBottom="24dp"
-        android:contentDescription="Trophy" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/surfaceColor">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="32dp">
-
-            <TextView
-                android:id="@+id/tvScoreMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Excellent !"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@color/textColorPrimary"
-                android:layout_marginBottom="8dp"/>
-
-            <TextView
-                android:id="@+id/tvCategoryResult"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Géographie"
-                android:textSize="16sp"
-                android:textColor="@color/textColorSecondary"
-                android:layout_marginBottom="24dp"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#EEEEEE"
-                android:layout_marginBottom="24dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Your Score"
-                android:textSize="14sp"
-                android:textAllCaps="true"
-                android:letterSpacing="0.1"
-                android:textColor="@color/textColorSecondary" />
-
-            <TextView
-                android:id="@+id/tvScore"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="4 / 5"
-                android:textSize="48sp"
-                android:textStyle="bold"
-                android:textColor="@color/primaryColor"
-                android:layout_marginBottom="16dp"/>
-
-            <ProgressBar
-                android:id="@+id/scoreProgressBar"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:progress="80"
-                android:progressDrawable="@drawable/custom_progress_bar"
-                android:layout_marginBottom="8dp"/>
-
-            <TextView
-                android:id="@+id/tvPercentage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="80%"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/primaryColor"/>
-
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    android:background="@drawable/bg_score"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_marginTop="32dp">
+        android:padding="24dp">
 
-        <Button
-            android:id="@+id/bTry"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="Rejouer"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/primaryColor"
-            android:textColor="@color/white"
-            app:cornerRadius="12dp"
-            android:layout_marginBottom="12dp"/>
+        <TextView
+            android:id="@+id/tvScoreMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Excellent !"
+            android:textColor="@color/text_primary"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/bLogout"
-            style="@style/Widget.Material3.Button.TextButton"
+        <FrameLayout
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/score_circle">
+
+            <TextView
+                android:id="@+id/tvScore"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="4 / 5"
+                android:textColor="@color/success_green"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvPercentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="80%"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <ProgressBar
+            android:id="@+id/scoreProgressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="Logout"
-            android:textSize="16sp"
-            android:textColor="@color/errorColor"
-            android:textAllCaps="false" />
+            android:layout_height="10dp"
+            android:layout_marginTop="18dp"
+            android:progress="80"
+            android:progressDrawable="@drawable/score_progress_bar" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:alignmentMode="alignMargins"
+            android:columnCount="2"
+            android:columnOrderPreserved="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="6dp"
+                android:background="@drawable/score_stat_card"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Catégorie"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tvCategoryResult"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Géographie"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="6dp"
+                android:background="@drawable/score_stat_card"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Difficulté"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tvDifficultyResult"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Facile"
+                    android:textColor="@color/blue_accent"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </GridLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/score_stat_card"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bonus"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/tvBonusScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="0 points"
+                android:textColor="@color/success_green"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bTry"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/button_gradient"
+                android:text="Rejouer"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bLogout"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/button_ghost"
+                android:text="Se déconnecter"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp" />
+        </LinearLayout>
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

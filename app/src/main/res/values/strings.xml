@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">QuizApp-gabbas</string>
     <string name="google_maps_key">AIzaSyD6qD2QDd15_TLbTAa-IYdPkfHsozDCI6M</string>
+    <string name="chatbot_voice_input">Saisie vocale</string>
+    <string name="chatbot_voice_permission_required">Autorisez le microphone pour utiliser la saisie vocale</string>
+    <string name="chatbot_voice_recognition_failed">Reconnaissance vocale échouée, réessayez</string>
 </resources>

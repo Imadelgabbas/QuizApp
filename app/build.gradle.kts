@@ -1,7 +1,22 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.services)
 }
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use(::load)
+    }
+}
+
+val flaskHost = localProperties.getProperty("flask.host") ?: "127.0.0.1"
+val flaskPort = localProperties.getProperty("flask.port") ?: "5000"
+
+fun buildConfigString(value: String): String =
+    "\"${value.replace("\\", "\\\\").replace("\"", "\\\"")}\""
 
 android {
     namespace = "com.gabbas.quizapp_gabbas"
@@ -14,7 +29,20 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        buildConfigField("String", "FLASK_HOST", buildConfigString(flaskHost))
+        buildConfigField("String", "FLASK_PORT", buildConfigString(flaskPort))
+        buildConfigField(
+            "String",
+            "FLASK_BASE_URL",
+            buildConfigString("http://$flaskHost:$flaskPort")
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
     }
 
     buildTypes {
@@ -49,6 +77,12 @@ dependencies {
     // Play Services Location
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("androidx.camera:camera-core:1.3.0")
+    implementation("androidx.camera:camera-camera2:1.3.0")
+    implementation("androidx.camera:camera-lifecycle:1.3.0")
+    implementation("androidx.camera:camera-view:1.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

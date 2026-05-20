@@ -3,6 +3,7 @@ package com.gabbas.quizapp_gabbas;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 public class Register extends AppCompatActivity {
 
+    private static final String TAG = "RegisterActivity";
     EditText etMail, etPassword, etPassword1;
     Button bRegister;
     TextView tvLogin;
@@ -34,7 +36,7 @@ public class Register extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_email_register);
 
         // Initialisation Firebase
         mAuth = FirebaseAuth.getInstance();
@@ -78,6 +80,7 @@ public class Register extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     // Succès : Enregistrement dans Firestore
+                                    Log.d(TAG, "createUserWithEmail:success");
                                     String userId = mAuth.getCurrentUser().getUid();
                                     
                                     Map<String, Object> user = new HashMap<>();
@@ -90,17 +93,21 @@ public class Register extends AppCompatActivity {
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                    // On ouvre CategoryActivity même si Firestore échoue (optionnel)
-                                                    // ou on gère l'erreur. Ici on suit l'objectif.
+                                                    if (task.isSuccessful()) {
+                                                        Log.d(TAG, "User profile created in Firestore");
+                                                    } else {
+                                                        Log.e(TAG, "Error creating user profile", task.getException());
+                                                    }
                                                     Toast.makeText(Register.this, "Compte créé avec succès", Toast.LENGTH_SHORT).show();
                                                     Intent intent = new Intent(Register.this, CategoryActivity.class);
                                                     startActivity(intent);
-                                                    finish(); // Ferme Register.java
+                                                    finish();
                                                 }
                                             });
                                 } else {
-                                    // Affichage de l'erreur Firebase (ex: email déjà utilisé)
-                                    Toast.makeText(Register.this, "Erreur: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                    // Affichage de l'erreur Firebase
+                                    Log.e(TAG, "createUserWithEmail:failure", task.getException());
+                                    Toast.makeText(Register.this, "Erreur d'inscription: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             }
                         });

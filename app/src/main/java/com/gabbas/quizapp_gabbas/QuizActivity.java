@@ -1,18 +1,16 @@
 package com.gabbas.quizapp_gabbas;
 
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import com.gabbas.quizapp_gabbas.databinding.ActivityQuizBinding;
 import com.gabbas.quizapp_gabbas.data.*;
 
 import java.util.ArrayList;
@@ -21,113 +19,159 @@ import java.util.List;
 
 public class QuizActivity extends AppCompatActivity {
 
-    private TextView tvCategory, tvQuestionCount, tvQuestion;
-    private RadioGroup rgAnswers;
-    private RadioButton rb1, rb2, rb3, rb4;
-    private Button btnNext;
-    private ProgressBar quizProgressBar;
+    private static final int QUESTION_LIMIT = 5;
+    private static final String DIFFICULTY_EASY = "EASY";
+    private static final String DIFFICULTY_MEDIUM = "MEDIUM";
+    private static final String DIFFICULTY_HARD = "HARD";
+
+    private ActivityQuizBinding binding;
 
     private List<Question> questionList;
     private int currentQuestionIndex = 0;
     private int score = 0;
     private String category, countryName, countryCode, cityName, regionName;
+    private String difficulty;
+    private long questionDurationMs;
+    private CountDownTimer countDownTimer;
+    private boolean answerLocked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz);
+        binding = ActivityQuizBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        // 1. Récupération des données passées par l'Intent
         category = getIntent().getStringExtra("category");
         cityName = getIntent().getStringExtra("cityName");
         regionName = getIntent().getStringExtra("regionName");
         countryName = getIntent().getStringExtra("countryName");
         countryCode = getIntent().getStringExtra("countryCode");
+        difficulty = getIntent().getStringExtra("difficulty");
+        if (difficulty == null || difficulty.trim().isEmpty()) {
+            difficulty = DIFFICULTY_EASY;
+        }
+        questionDurationMs = getQuestionDurationMs(difficulty);
 
-        // Logs de débogage demandés
         Log.d("QuizApp", "Selected category: " + category);
         Log.d("QuizApp", "Detected city: " + cityName);
         Log.d("QuizApp", "Detected region: " + regionName);
+        Log.d("QuizApp", "Selected difficulty: " + difficulty);
 
-        tvCategory = findViewById(R.id.tvCategoryTitle);
-        tvQuestionCount = findViewById(R.id.tvQuestionCount);
-        tvQuestion = findViewById(R.id.tvQuestion);
-        rgAnswers = findViewById(R.id.rgAnswers);
-        rb1 = findViewById(R.id.rb1);
-        rb2 = findViewById(R.id.rb2);
-        rb3 = findViewById(R.id.rb3);
-        rb4 = findViewById(R.id.rb4);
-        btnNext = findViewById(R.id.btnNext);
-        quizProgressBar = findViewById(R.id.quizProgressBar);
+        binding.tvCategoryTitle.setText(category);
+        binding.tvDifficultyBadge.setText(getDifficultyLabel(difficulty));
 
-        tvCategory.setText(category);
-
-        // 2. Logique de chargement
         loadQuestions();
-        
+
         if (questionList != null && !questionList.isEmpty()) {
             displayQuestion();
         } else {
-            Toast.makeText(this, "Aucune question trouvée", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Aucune question trouvée pour cette difficulté", Toast.LENGTH_SHORT).show();
             finish();
         }
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int selectedId = rgAnswers.getCheckedRadioButtonId();
-                if (selectedId == -1) {
-                    Toast.makeText(QuizActivity.this, "Veuillez choisir une réponse", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                RadioButton selectedRb = findViewById(selectedId);
-                int selectedIndex = rgAnswers.indexOfChild(selectedRb);
-
-                // Vérification de la réponse avec l'index
-                if (selectedIndex == questionList.get(currentQuestionIndex).getCorrectAnswerIndex()) {
-                    score++;
-                }
-
-                currentQuestionIndex++;
-                if (currentQuestionIndex < questionList.size()) {
-                    displayQuestion();
-                } else {
-                    // Fin du quiz : ouverture de Score.java
-                    Intent intent = new Intent(QuizActivity.this, Score.class);
-                    intent.putExtra("score", score);
-                    intent.putExtra("totalQuestions", questionList.size());
-                    intent.putExtra("category", category);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        });
+        binding.btnNext.setOnClickListener(v -> handleAnswerSubmission(false));
     }
 
     private void displayQuestion() {
-        rgAnswers.clearCheck();
+        answerLocked = false;
+        cancelTimer();
+        binding.rgAnswers.clearCheck();
+
         Question currentQuestion = questionList.get(currentQuestionIndex);
-        
-        tvQuestion.setText(currentQuestion.getQuestion());
-        tvQuestionCount.setText("Question " + (currentQuestionIndex + 1) + "/" + questionList.size());
-        
-        // Update progress bar
-        if (quizProgressBar != null) {
-            int progress = (int) (((double) (currentQuestionIndex + 1) / questionList.size()) * 100);
-            quizProgressBar.setProgress(progress);
-        }
+
+        binding.tvQuestion.setText(currentQuestion.getQuestion());
+        binding.tvQuestionCount.setText("Question " + (currentQuestionIndex + 1) + "/" + questionList.size());
+        int progress = (int) (((double) (currentQuestionIndex + 1) / questionList.size()) * 100);
+        binding.quizProgressBar.setProgress(progress);
 
         String[] choices = currentQuestion.getChoices();
-        rb1.setText(choices[0]);
-        rb2.setText(choices[1]);
-        rb3.setText(choices[2]);
-        rb4.setText(choices[3]);
+        binding.rb1.setText(choices[0]);
+        binding.rb2.setText(choices[1]);
+        binding.rb3.setText(choices[2]);
+        binding.rb4.setText(choices[3]);
 
         if (currentQuestionIndex == questionList.size() - 1) {
-            btnNext.setText("Terminer");
+            binding.btnNext.setText("Terminer");
         } else {
-            btnNext.setText("Suivant");
+            binding.btnNext.setText("Suivant");
+        }
+
+        startTimer();
+    }
+
+    private void startTimer() {
+        updateTimerDisplay(questionDurationMs);
+        countDownTimer = new CountDownTimer(questionDurationMs, 1000L) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                updateTimerDisplay(millisUntilFinished);
+            }
+
+            @Override
+            public void onFinish() {
+                updateTimerDisplay(0L);
+                handleAnswerSubmission(true);
+            }
+        }.start();
+    }
+
+    private void updateTimerDisplay(long millisLeft) {
+        long secondsLeft = (long) Math.ceil(millisLeft / 1000.0d);
+        binding.tvTimer.setText("\u23F1 " + secondsLeft + "s");
+
+        float ratio = questionDurationMs == 0L ? 0f : (float) millisLeft / (float) questionDurationMs;
+        int colorRes;
+        if (ratio > 0.5f) {
+            colorRes = R.color.success_green;
+        } else if (ratio >= 0.25f) {
+            colorRes = R.color.amber_accent;
+        } else {
+            colorRes = R.color.danger_red;
+        }
+        binding.tvTimer.setTextColor(ContextCompat.getColor(this, colorRes));
+    }
+
+    private void handleAnswerSubmission(boolean timedOut) {
+        if (answerLocked) {
+            return;
+        }
+
+        int selectedId = binding.rgAnswers.getCheckedRadioButtonId();
+        if (!timedOut && selectedId == -1) {
+            Toast.makeText(this, "Veuillez choisir une réponse", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        answerLocked = true;
+        cancelTimer();
+
+        if (!timedOut && selectedId != -1) {
+            RadioButton selectedRb = findViewById(selectedId);
+            int selectedIndex = binding.rgAnswers.indexOfChild(selectedRb);
+            if (selectedIndex == questionList.get(currentQuestionIndex).getCorrectAnswerIndex()) {
+                score++;
+            }
+        }
+
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questionList.size()) {
+            displayQuestion();
+            return;
+        }
+
+        Intent intent = new Intent(QuizActivity.this, Score.class);
+        intent.putExtra("score", score);
+        intent.putExtra("totalQuestions", questionList.size());
+        intent.putExtra("category", category);
+        intent.putExtra("difficulty", difficulty);
+        startActivity(intent);
+        finish();
+    }
+
+    private void cancelTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
         }
     }
 
@@ -153,14 +197,47 @@ public class QuizActivity extends AppCompatActivity {
             allQuestions = GenericQuestions.getQuestions(category);
         }
 
-        // Mélanger et limiter à 5 questions
-        Collections.shuffle(allQuestions);
         questionList = new ArrayList<>();
-        int limit = Math.min(allQuestions.size(), 5);
-        for (int i = 0; i < limit; i++) {
-            questionList.add(allQuestions.get(i));
+        for (Question question : allQuestions) {
+            if (difficulty.equalsIgnoreCase(question.getDifficulty())) {
+                questionList.add(question);
+            }
         }
 
+        Collections.shuffle(questionList);
+        List<Question> limitedQuestions = new ArrayList<>();
+        int limit = Math.min(questionList.size(), QUESTION_LIMIT);
+        for (int i = 0; i < limit; i++) {
+            limitedQuestions.add(questionList.get(i));
+        }
+        questionList = limitedQuestions;
+
         Log.d("QuizApp", "Questions loaded: " + questionList.size());
+    }
+
+    private long getQuestionDurationMs(String difficultyCode) {
+        if (DIFFICULTY_HARD.equalsIgnoreCase(difficultyCode)) {
+            return 15000L;
+        }
+        if (DIFFICULTY_MEDIUM.equalsIgnoreCase(difficultyCode)) {
+            return 20000L;
+        }
+        return 30000L;
+    }
+
+    private String getDifficultyLabel(String difficultyCode) {
+        if (DIFFICULTY_HARD.equalsIgnoreCase(difficultyCode)) {
+            return "Difficile";
+        }
+        if (DIFFICULTY_MEDIUM.equalsIgnoreCase(difficultyCode)) {
+            return "Moyen";
+        }
+        return "Facile";
+    }
+
+    @Override
+    protected void onDestroy() {
+        cancelTimer();
+        super.onDestroy();
     }
 }

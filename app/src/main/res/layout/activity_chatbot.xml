@@ -3,92 +3,138 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_chatbot"
     android:orientation="vertical"
-    android:background="@drawable/main_background"
     android:padding="16dp">
 
-    <!-- Header with Back Button and Title -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="8dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBack"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Retour"
-            android:textColor="@color/primaryColor"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_circle_ghost"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:minWidth="40dp"
+            android:text="←"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chatbot Ollama"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/textColorPrimary"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            android:text="Chatbot IA"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
-    <!-- Chat History Area -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/chat_status_dot" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="En ligne"
+            android:textColor="@color/success_green"
+            android:textSize="12sp" />
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/scrollChat"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginBottom="12dp"
-        android:background="@drawable/modern_card"
-        android:padding="12dp">
+        android:background="@drawable/glass_card_strong"
+        android:padding="14dp">
 
         <TextView
             android:id="@+id/tvChatLog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:lineSpacingExtra="5dp"
             android:text="Bonjour ! Posez-moi une question sur le quiz ou tout autre sujet.\n"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="16sp"
-            android:lineSpacingExtra="4dp"/>
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
     </ScrollView>
 
-    <!-- Loading Indicator -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="10dp"
+        android:indeterminateTint="@color/blue_accent"
+        android:visibility="gone" />
 
-    <!-- Input Area -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/glass_pill"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:padding="8dp">
 
         <EditText
             android:id="@+id/etMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@android:color/transparent"
             android:hint="Votre message..."
-            android:textColor="@color/textColorPrimary"
-            android:padding="12dp"
-            android:background="@drawable/modern_card"
+            android:importantForAutofill="no"
             android:inputType="textLongMessage"
             android:maxLines="4"
-            android:importantForAutofill="no"/>
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMic"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/button_gradient"
+            android:contentDescription="@string/chatbot_voice_input"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:minWidth="48dp"
+            android:padding="0dp"
+            app:icon="@drawable/ic_mic_24"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconTint="@color/text_primary" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Envoyer"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            app:cornerRadius="8dp"/>
+            android:background="@drawable/button_gradient"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:minWidth="48dp"
+            android:text="➤"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp" />
     </LinearLayout>
-
 </LinearLayout>
